@@ -1,3 +1,11 @@
+"""
+
+reinforcement learning utils file
+copied from https://github.com/pjreddie/rl-hw/blob/master/rl_hw_problems.ipynb
+
+"""
+
+
 import time
 import numpy as np
 import torch
