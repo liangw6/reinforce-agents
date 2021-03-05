@@ -61,7 +61,7 @@ class Generator(object):
 		
 		self.drop_last_state = drop_last_state
 		
-		self.horizon = self.env.spec.timestep_limit if horizon is None else horizon
+		self.horizon = self.env.spec.max_episode_steps if horizon is None else horizon
 	
 	def __len__(self):
 		return self.created
@@ -140,7 +140,7 @@ def solve(A, b, out=None, bias=True):
 	if bias:
 		A = torch.cat([A, torch.ones(*(A.size()[:-1] + (1,))).type_as(A)], -1)
 	
-	x, _ = torch.gels(b, A)
+	x, _ = torch.lstsq(b, A)
 	
 	if out is None:
 		out = nn.Linear(A.size(-1) - 1, b.size(-1), bias=bias).to(A.device)

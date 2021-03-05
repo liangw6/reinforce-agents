@@ -11,20 +11,26 @@ But core code is mine
 
 
 from rlhw_util import *  # <-- look whats inside here - it could save you a lot of work!
+import torch.nn.functional as F
+from torch.optim import Adam
 
 class Actor(nn.Module):
-    def __init__(self, state_dim, action_dim):
+    def __init__(self, state_dim, action_dim, hidden_dim=2):
         super(Actor, self).__init__()
 
-        # TODO: Fill in the code to define you policy
-
-        raise NotImplementedError
+        # NOTE: Fill in the code to define you policy
+        self.fc_1 = nn.Linear(state_dim, hidden_dim)
+        self.fc_2 = nn.Linear(hidden_dim, hidden_dim)
+        self.fc_3 = nn.Linear(hidden_dim, action_dim)
 
     def forward(self, state):
 
-        # TODO: Fill in the code to run a forward pass of your policy to get a distribution over actions (HINT: probabilities sum to 1)
+        # NOTE: Fill in the code to run a forward pass of your policy to get a distribution over actions (HINT: probabilities sum to 1)
+        h1 = F.leaky_relu(self.fc_1.forward(state))
+        h2 = F.leaky_relu(self.fc_2.forward(h1))
+        out = F.softmax(self.fc_3.forward(h2))
 
-        raise NotImplementedError
+        return out
 
     def get_policy(self, state):
         return Categorical(self(state))
@@ -45,8 +51,8 @@ class REINFORCE(nn.Module):
 
         self.baseline = nn.Linear(state_dim, 1)
 
-        # TODO: create an optimizer for the parameters of your actor (HINT: use the passed in lr and weight_decay args)
-        raise NotImplementedError
+        # NOTE: create an optimizer for the parameters of your actor (HINT: use the passed in lr and weight_decay args)
+        self.optimizer = Adam(self.actor.parameters(), lr=lr, weight_decay=weight_decay)
 
         self.discount = discount
 
@@ -66,7 +72,11 @@ class REINFORCE(nn.Module):
 
         states, actions, returns = torch.cat(states), torch.cat(actions), torch.cat(returns)
 
-        raise NotImplementedError
+        self.optimizer.zero_grad()
+        loss = 0
+        for i in range(len(states)):
+            loss += -self.actor.get_policy(states[i]).log_prob(actions[i]) * (returns[i] - self.baseline(states[i]))
+        self.optimizer.step()
 
         error = F.mse_loss(self.baseline(states).squeeze(), returns).detach()
         solve(states, returns, out=self.baseline)

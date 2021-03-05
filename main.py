@@ -32,13 +32,17 @@ weight_decay = 1e-4
 
 env_name = 'CartPole-v1'
 #env_name = 'LunarLander-v2'
+
+
 e = Pytorch_Gym_Env(env_name)
+# use GPU (maybe faster)
+# e = Pytorch_Gym_Env(env_name, device='cuda')
 state_dim = e.observation_space.shape[0]
 action_dim = e.action_space.n
 
 # Choose what agent to use
-#agent = REINFORCE(state_dim, action_dim, lr=lr, weight_decay=weight_decay)
-agent = A3C(state_dim, action_dim, lr=lr, weight_decay=weight_decay)
+agent = REINFORCE(state_dim, action_dim, lr=lr, weight_decay=weight_decay)
+# agent = A3C(state_dim, action_dim, lr=lr, weight_decay=weight_decay)
 
 total_episodes = 0
 print(agent) # Let's take a look at what we're working with...
