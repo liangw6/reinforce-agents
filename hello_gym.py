@@ -1,15 +1,41 @@
 import gym
 
 
-env = gym.make("CartPole-v1")
-observation = env.reset()
-for i in range(40):
-  env.render()
-  action = env.action_space.sample() # your agent here (this takes random actions)
-  observation, reward, done, info = env.step(action)
+def cartPoleRun():
+    env = gym.make('CartPole-v0')
+    for i_episode in range(20):
+        observation = env.reset()
+        for t in range(100):
+            env.render()
+            print('at t', t)
+            print('\t observation:',observation)
+            print('\t action space:', env.action_space)
 
-  if done:
-    # observation = env.reset()
-    print("Dead at", i)
-    break
-env.close()
+            action = env.action_space.sample()
+            observation, reward, done, info = env.step(action)
+
+            print('\t action', action)
+            print('\t reward', reward)
+            if done:
+                print("Episode finished after {} timesteps".format(t + 1))
+                break
+    env.close()
+
+
+def lunarLander():
+    env = gym.make('LunarLander-v2')
+    for i_episode in range(20):
+        observation = env.reset()
+        for t in range(100):
+            env.render()
+            # print(observation)
+            action = env.action_space.sample()
+            observation, reward, done, info = env.step(action)
+            if done:
+                print("Episode finished after {} timesteps".format(t + 1))
+                break
+    env.close()
+
+
+# lunarLander()
+cartPoleRun()
