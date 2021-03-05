@@ -72,10 +72,10 @@ class REINFORCE(nn.Module):
 
         states, actions, returns = torch.cat(states), torch.cat(actions), torch.cat(returns)
 
+        loss = (Categorical(self.actor(states)).log_prob(actions) * (returns - self.baseline(states))).sum()
+
         self.optimizer.zero_grad()
-        loss = 0
-        for i in range(len(states)):
-            loss += -self.actor.get_policy(states[i]).log_prob(actions[i]) * (returns[i] - self.baseline(states[i]))
+        loss.backward()
         self.optimizer.step()
 
         error = F.mse_loss(self.baseline(states).squeeze(), returns).detach()
