@@ -42,8 +42,11 @@ state_dim = e.observation_space.shape[0]
 action_dim = e.action_space.n
 
 # Choose what agent to use
+# REINFORCE uses lstqs, which doesn't work well on GPU. So only use this for CPU
 agent = REINFORCE(state_dim, action_dim, lr=lr, weight_decay=weight_decay)
+
 # agent = A3C(state_dim, action_dim, lr=lr, weight_decay=weight_decay)
+# agent.to('cuda')
 
 total_episodes = 0
 print(agent) # Let's take a look at what we're working with...

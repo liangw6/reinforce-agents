@@ -45,7 +45,7 @@ class Actor(nn.Module):
 
 class REINFORCE(nn.Module):
 
-    def __init__(self, state_dim, action_dim, discount=0.97, lr=1e-3, weight_decay=1e-4):
+    def __init__(self, state_dim, action_dim, discount=0.97, lr=1e-3, weight_decay=1e-4, device='cuda'):
         super(REINFORCE, self).__init__()
         self.actor = Actor(state_dim, action_dim)
 
