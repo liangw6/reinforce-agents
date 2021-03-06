@@ -15,7 +15,7 @@ import torch.nn.functional as F
 from torch.optim import Adam
 
 class Actor(nn.Module):
-    def __init__(self, state_dim, action_dim, hidden_dim=2):
+    def __init__(self, state_dim, action_dim, hidden_dim=16):
         super(Actor, self).__init__()
 
         # NOTE: Fill in the code to define you policy
