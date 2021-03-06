@@ -15,7 +15,7 @@ import torch.nn.functional as F
 from torch.optim import Adam
 
 class Actor(nn.Module):
-    def __init__(self, state_dim, action_dim, hidden_dim=16):
+    def __init__(self, state_dim, action_dim, hidden_dim=128):
         super(Actor, self).__init__()
 
         # NOTE: Fill in the code to define you policy
@@ -86,7 +86,7 @@ class REINFORCE(nn.Module):
 
 
 class Critic(nn.Module):
-    def __init__(self, state_dim, hidden_dim = 32):
+    def __init__(self, state_dim, hidden_dim=128):
         super(Critic, self).__init__()
 
         self.fc_1 = nn.Linear(state_dim, hidden_dim)
@@ -95,8 +95,8 @@ class Critic(nn.Module):
 
     def forward(self, state):
         # NOTE: apply your value function network to get a value given this batch of states
-        h1 = F.tanh(self.fc_1.forward(state))
-        h2 = F.tanh(self.fc_2.forward(h1))
+        h1 = F.leaky_relu(self.fc_1.forward(state))
+        h2 = F.leaky_relu(self.fc_2.forward(h1))
 
         return self.fc_3(h2)
 
