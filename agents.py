@@ -26,8 +26,8 @@ class Actor(nn.Module):
     def forward(self, state):
 
         # NOTE: Fill in the code to run a forward pass of your policy to get a distribution over actions (HINT: probabilities sum to 1)
-        h1 = F.leaky_relu(self.fc_1.forward(state))
-        h2 = F.leaky_relu(self.fc_2.forward(h1))
+        h1 = F.tanh(self.fc_1.forward(state))
+        h2 = F.tanh(self.fc_2.forward(h1))
         out = F.softmax(self.fc_3.forward(h2))
 
         return out
@@ -72,7 +72,7 @@ class REINFORCE(nn.Module):
 
         states, actions, returns = torch.cat(states), torch.cat(actions), torch.cat(returns)
 
-        loss = (Categorical(self.actor(states)).log_prob(actions) * (returns - self.baseline(states))).sum()
+        loss = -(Categorical(self.actor(states)).log_prob(actions) * (returns - self.baseline(states))).mean()
 
         self.optimizer.zero_grad()
         loss.backward()

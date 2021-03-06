@@ -9,6 +9,7 @@ from https://github.com/pjreddie/rl-hw/blob/master/rl_hw_problems.ipynb
 """
 
 from agents import *
+import matplotlib.pyplot as plt
 
 def run_iteration(mode, N, agent, gen, horizon=None, render=False):
     train = mode == 'train'
@@ -51,6 +52,11 @@ print(agent) # Let's take a look at what we're working with...
 # Create a
 gen = Generator(e, agent)
 
+
+all_train_loss = []
+all_train_reward = []
+all_eval_reward = []
+
 num_iter = 100
 num_train = 10
 num_eval = 10  # dont change this
@@ -66,8 +72,24 @@ for itr in range(num_iter):
     if eval_reward > 499 and env_name == 'CartPole-v1':  # dont change this
         print('Success!!! You have solved cartpole task! Time for a bigger challenge!')
 
+    all_train_loss.append(train_loss)
+    all_train_reward.append(train_reward)
+    all_eval_reward.append(eval_reward)
+
     # save model
 print('Done')
 
 # You can visualize your policy at any time
 run_iteration('eval', 1, agent, gen, render=True)
+
+plt.subplot(1, 2, 1)
+plt.plot(range(num_iter), all_train_loss)
+plt.title('Train Loss over Iter')
+
+plt.subplot(1, 2, 2)
+plt.plot(range(num_iter), all_train_reward, label='train reward')
+plt.plot(range(num_iter), all_eval_reward, label='eval reward')
+plt.legend()
+plt.title('Train and Eval Reward over Iter')
+
+plt.show()
