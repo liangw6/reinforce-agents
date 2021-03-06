@@ -66,7 +66,7 @@ class REINFORCE(nn.Module):
         and 1, respectively.
         '''
 
-        # TODO: implement the REINFORCE algorithm (HINT: check the slides/papers)
+        # NOTES: implement the REINFORCE algorithm (HINT: check the slides/papers)
 
         returns = [compute_returns(rs, discount=self.discount) for rs in rewards]
 
@@ -86,17 +86,19 @@ class REINFORCE(nn.Module):
 
 
 class Critic(nn.Module):
-    def __init__(self, state_dim):
+    def __init__(self, state_dim, hidden_dim = 32):
         super(Critic, self).__init__()
 
-        # TODO: define your value function network
-
-        raise NotImplementedError
+        self.fc_1 = nn.Linear(state_dim, hidden_dim)
+        self.fc_2 = nn.Linear(hidden_dim, hidden_dim)
+        self.fc_3 = nn.Linear(hidden_dim, 1)
 
     def forward(self, state):
-        # TODO: apply your value function network to get a value given this batch of states
+        # NOTE: apply your value function network to get a value given this batch of states
+        h1 = F.tanh(self.fc_1.forward(state))
+        h2 = F.tanh(self.fc_2.forward(h1))
 
-        raise NotImplementedError
+        return self.fc_3(h2)
 
 
 class A3C(nn.Module):
@@ -106,9 +108,11 @@ class A3C(nn.Module):
         self.actor = Actor(state_dim, action_dim)
         self.critic = Critic(state_dim)
 
-        # TODO: create an optimizer for the parameters of your actor (HINT: use the passed in lr and weight_decay args)
+        # NOTE: create an optimizer for the parameters of your actor (HINT: use the passed in lr and weight_decay args)
         # (HINT: the actor and critic have different objectives, so how many optimizers do you need?)
-        raise NotImplementedError
+
+        self.actor_optimizer = Adam(self.actor.parameters(), lr=lr, weight_decay=weight_decay)
+        self.critic_optimizer = Adam(self.critic.parameters(), lr=lr, weight_decay=weight_decay)
 
         self.discount = discount
 
@@ -123,4 +127,16 @@ class A3C(nn.Module):
         # TODO: implement A3C (HINT: algorithm details found in A3C paper supplement)
         # (HINT2: the algorithm is actually very similar to REINFORCE, the only difference is now we have a critic, what might that do?)
 
-        raise NotImplementedError
+        # actor optimize
+        actor_loss = -(Categorical(self.actor(states)).log_prob(actions) * (returns - self.critic(states))).mean()
+        self.actor_optimizer.zero_grad()
+        actor_loss.backward()
+        self.actor_optimizer.step()
+
+        # critic optimize
+        critic_loss = (returns - self.critic(states)).pow(2).mean()
+        self.critic_optimizer.zero_grad()
+        critic_loss.backward()
+        self.critic_optimizer.step()
+
+        return actor_loss.item()

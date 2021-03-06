@@ -35,18 +35,18 @@ env_name = 'CartPole-v1'
 #env_name = 'LunarLander-v2'
 
 
-e = Pytorch_Gym_Env(env_name)
+# e = Pytorch_Gym_Env(env_name)
 # use GPU (maybe faster)
-# e = Pytorch_Gym_Env(env_name, device='cuda')
+e = Pytorch_Gym_Env(env_name, device='cuda')
 state_dim = e.observation_space.shape[0]
 action_dim = e.action_space.n
 
 # Choose what agent to use
 # REINFORCE uses lstqs, which doesn't work well on GPU. So only use this for CPU
-agent = REINFORCE(state_dim, action_dim, lr=lr, weight_decay=weight_decay)
+# agent = REINFORCE(state_dim, action_dim, lr=lr, weight_decay=weight_decay)
 
-# agent = A3C(state_dim, action_dim, lr=lr, weight_decay=weight_decay)
-# agent.to('cuda')
+agent = A3C(state_dim, action_dim, lr=lr, weight_decay=weight_decay)
+agent.to('cuda')
 
 total_episodes = 0
 print(agent) # Let's take a look at what we're working with...
@@ -76,8 +76,8 @@ for itr in range(num_iter):
         print('Success!!! You have solved cartpole task! Time for a bigger challenge!')
 
     all_train_loss.append(train_loss)
-    all_train_reward.append(train_reward)
-    all_eval_reward.append(eval_reward)
+    all_train_reward.append(train_reward.to('cpu'))
+    all_eval_reward.append(eval_reward.to('cpu'))
 
     # save model
 print('Done')
