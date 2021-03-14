@@ -95,8 +95,8 @@ class Critic(nn.Module):
 
     def forward(self, state):
         # NOTE: apply your value function network to get a value given this batch of states
-        h1 = F.leaky_relu(self.fc_1.forward(state))
-        h2 = F.leaky_relu(self.fc_2.forward(h1))
+        h1 = F.relu(self.fc_1.forward(state))
+        h2 = F.relu(self.fc_2.forward(h1))
 
         return self.fc_3(h2)
 
@@ -128,15 +128,24 @@ class A3C(nn.Module):
         # (HINT2: the algorithm is actually very similar to REINFORCE, the only difference is now we have a critic, what might that do?)
 
         # actor optimize
-        actor_loss = -(Categorical(self.actor(states)).log_prob(actions) * (returns - self.critic(states))).mean()
+
+        # IMPORTANT: use squeeze to avoid wrong broadcast
+        critic_estimate = torch.squeeze(self.critic(states))
+        advantage = returns - critic_estimate
+        # scale loss by advantage
+        actor_loss = -(Categorical(self.actor(states)).log_prob(actions) * advantage).mean()
         self.actor_optimizer.zero_grad()
         actor_loss.backward()
         self.actor_optimizer.step()
 
         # critic optimize
-        critic_loss = (returns - self.critic(states)).pow(2).mean()
+
+        # Do another calculation because the grad won't work otherwise
+        critic_estimate = torch.squeeze(self.critic(states))
+        advantage = returns - critic_estimate
+        critic_loss = advantage.pow(2).mean()
         self.critic_optimizer.zero_grad()
         critic_loss.backward()
         self.critic_optimizer.step()
 
-        return actor_loss.item()
+        return actor_loss.item(), critic_loss.item()
