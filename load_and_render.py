@@ -1,4 +1,9 @@
 from agents import *
+import sys
+
+if len(sys.argv) < 2:
+    print("Usage: python load_and_render saved_model.pt")
+    sys.exit(1)
 
 env_name = 'LunarLander-v2'
 e = Pytorch_Gym_Env(env_name)
@@ -7,7 +12,7 @@ action_dim = e.action_space.n
 
 
 agent = A3C(state_dim, action_dim)
-agent.load_state_dict(torch.load('saved_models/actor_only_3000.pt'))
+agent.load_state_dict(torch.load(sys.argv[1]))
 gen = Generator(e, agent)
 
 agent.eval()
