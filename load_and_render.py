@@ -24,7 +24,7 @@ else:
 output_dir = args['output']
 
 # starting up the gym
-e = Pytorch_Gym_Env(env_name, output=output_dir, max_episode_steps=500)
+e = Pytorch_Gym_Env(env_name, output=output_dir)
 state_dim = e.observation_space.shape[0]
 action_dim = e.action_space.n
 # start up agent

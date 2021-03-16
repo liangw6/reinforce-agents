@@ -32,8 +32,8 @@ def run_iteration(mode, N, agent, gen, horizon=None, render=False):
 lr = 1e-3
 weight_decay = 1e-4
 
-# env_name = 'CartPole-v1'
-env_name = 'LunarLander-v2'
+env_name = 'CartPole-v1'
+# env_name = 'LunarLander-v2'
 
 
 # e = Pytorch_Gym_Env(env_name)
@@ -61,7 +61,7 @@ all_train_loss = []
 all_train_reward = []
 all_eval_reward = []
 
-num_iter = 300
+num_iter = 100
 num_train = 10
 num_eval = 10  # dont change this
 for itr in range(num_iter):
@@ -113,5 +113,5 @@ plt.savefig('tmp.png')
 plt.show()
 
 # only use this for saving model & training
-# torch.save(agent.state_dict(), 'saved_logs/tmp.pt')
-# torch.save((all_train_loss, all_train_reward, all_eval_reward))
+# torch.save(agent.to('cpu').state_dict(), 'saved_models/ac_2layer_32.pt')
+# torch.save((all_train_loss, all_train_reward, all_eval_reward), 'saved_logs/ac_2layer_32.pkl')
