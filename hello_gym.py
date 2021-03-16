@@ -1,9 +1,9 @@
 import gym
-
+from gym.wrappers import Monitor
 
 def run_random_agent(env_name='CartPole-v0'):
-    env = gym.make(env_name)
-    for i_episode in range(20):
+    env = Monitor(gym.make(env_name), './video')
+    for i_episode in range(1):
         observation = env.reset()
         for t in range(100):
             env.render()

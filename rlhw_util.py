@@ -13,15 +13,19 @@ import torch.nn as nn
 from torch.distributions import Normal, Categorical
 
 import gym
-
+from gym.wrappers import Monitor
 
 class Pytorch_Gym_Env(object):
 	'''
 	Wrapper for OpenAI-Gym environments so they can easily be used with pytorch
 	'''
 
-	def __init__(self, env_name, device='cpu'):
-		self._env = gym.make(env_name)
+	def __init__(self, env_name, device='cpu', output=None):
+		if output is None:
+			self._env = gym.make(env_name)
+		else:
+			self._env = Monitor(gym.make(env_name), output, force=True)
+
 		self.spec = self._env.spec
 		self.action_space = self._env.action_space
 		self.observation_space = self._env.observation_space
@@ -45,6 +49,10 @@ class Pytorch_Gym_Env(object):
 		reward = torch.tensor(reward).float().to(self._device).view(1)
 		done = torch.tensor(done).float().to(self._device).view(1)
 		return obs, reward, done, info
+
+	def close(self):
+		# closing environment to allow video saving
+		self._env.close()
 
 
 class Generator(object):
