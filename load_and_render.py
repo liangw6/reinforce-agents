@@ -17,14 +17,14 @@ saved_model_params = args['saved_model']
 if args['env'] == 'lander':
     env_name = 'LunarLander-v2'
 elif args['env'] == 'cartpole':
-    env_name = 'CartPole-v0'
+    env_name = 'CartPole-v1'
 else:
     print('unknown environment', args['env'])
     sys.exit(1)
 output_dir = args['output']
 
 # starting up the gym
-e = Pytorch_Gym_Env(env_name, output=output_dir)
+e = Pytorch_Gym_Env(env_name, output=output_dir, max_episode_steps=500)
 state_dim = e.observation_space.shape[0]
 action_dim = e.action_space.n
 # start up agent
