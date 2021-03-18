@@ -113,5 +113,5 @@ plt.savefig('tmp.png')
 plt.show()
 
 # only use this for saving model & training
-# torch.save(agent.to('cpu').state_dict(), 'saved_models/ac_2layer_32.pt')
-# torch.save((all_train_loss, all_train_reward, all_eval_reward), 'saved_logs/ac_2layer_32.pkl')
+# torch.save(agent.to('cpu').state_dict(), 'saved_models/ac_2layer_128.pt')
+# torch.save((all_train_loss, all_train_reward, all_eval_reward), 'saved_logs/ac_2layer_128.pkl')
