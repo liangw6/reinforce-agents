@@ -10,4 +10,5 @@ The code also uses the framework [2]
 
 ## Reference
 [1] Mnih, Volodymyr, et al. “Asynchronous Methods for Deep Reinforcement Learning.” ArXiv:1602.01783 [Cs], June 2016. arXiv.org, http://arxiv.org/abs/1602.01783.
+
 [2] Redmon, Joseph. Pjreddie/Rl-Hw. 2018. 2020. GitHub, https://github.com/pjreddie/rl-hw.
